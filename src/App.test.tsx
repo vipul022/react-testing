@@ -1,11 +1,19 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import App from "./App";
+
+import { getUser } from "./get-user";
+import { mocked } from "ts-jest/utils";
+// ! jest.mock is used to mock the result of any api call,
+jest.mock("./get-user");
+
+const mockGetUser = mocked(getUser, true);
 
 describe("When everything is OK", () => {
   // !beforeEach render the app before every test
-  beforeEach(() => {
+  beforeEach(async () => {
     render(<App />);
+    await waitFor(() => expect(mockGetUser).toHaveBeenCalled());
   });
   test("should render the App component without crashing", () => {
     // ! screen.debug() shows the html output of the in the console
@@ -28,8 +36,22 @@ describe("When everything is OK", () => {
     screen.getByPlaceholderText("Example");
   });
 
-  // ! all mehtods tarting with query does not throw error but it is very useful for checking negative outcome using expect with it
+  // ! all mehtods starting with query does not throw error but it is very useful for checking negative outcome using expect with it
   test('should not find the role "whatever" in our component', () => {
     expect(screen.queryByRole("whatever")).toBeNull();
+  })
+});
+
+describe("When component fetches the user successfully", () => {
+  beforeEach(() => {
+    console.log("mockGetUser before clear ", mockGetUser);
+
+    mockGetUser.mockClear();
+
+    console.log("mockGetUser after clear ", mockGetUser);
+  });
+  test("should call getUser once", async () => {
+    render(<App />);
+    await waitFor(() => expect(mockGetUser).toHaveBeenCalledTimes(1));
   });
 });

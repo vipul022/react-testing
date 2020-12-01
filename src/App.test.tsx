@@ -25,7 +25,7 @@ describe("When everything is OK", () => {
   });
   // !this is manily used to search label
   test("should select the input element by it's role", () => {
-    // ! Incase the following test does not pass and returns an array of textboxes instrad of html elements, we can test that using array method like it's done on line 30 and 31
+    // ! Incase the following test does not pass and returns an array of textboxes instead of html elements, we can test that using array method like it's done on line 30 and 31
     screen.getAllByRole("textbox");
     expect(screen.getAllByRole("textbox")[0]).toBeInTheDocument();
     expect(screen.getAllByRole("textbox").length).toEqual(1);
